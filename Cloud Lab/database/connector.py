@@ -8,25 +8,27 @@ sorenson impact center
 import mysql.connector
 from mysql.connector import MySQLConnection, Error
 from datetime import date, datetime, timedelta
+import main_activity
 
-def update_user(id,login,password,dateCreated):
-    date = datetime.now().date + timedelta(days=1)
-    
-    
-    
-    
-try:
-    cnx = mysql.connector.connect(user='sev_ad', password='Nhattienvo21!',
+cnx = mysql.connector.connect(user='sev_ad', password='Nhattienvo21!',
                                   host='cloud-lab-mysql.mysql.database.azure.com',
                                   database='cloud_lab_sys')
-    cursor = cnx.cursor()
-    cnx.commit()
 
+def register_user(user):
     
-
-except Error as error:
-    print(error)
+    statement = "INSERT INTO 'cloud_lab_sys'.'user_login' ('login_name', 'password','dateCreated') VALUES (?, ?, ?)"
+    statement.setString(1, user.getLogin())
+    statement.setString(2,user.getPassword())
+    statement.setString(3,user.getDateCreated())
     
-finally:
-    cursor.close()
-    cnx.close()
+    try:
+        cursor = cnx.cursor(prepared = True)
+        cursor.execute(statement)
+        cnx.commit()
+    
+    except Error as error:
+        print(error)
+    
+    finally:
+        cursor.close()
+        cnx.close()
