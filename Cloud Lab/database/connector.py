@@ -9,6 +9,8 @@ import mysql.connector
 from mysql.connector import MySQLConnection, Error
 from datetime import date, datetime, timedelta
 import main_activity
+from database.queries import queries
+from mysqlx import statement
 
 cnx = mysql.connector.connect(user='sev_ad', password='Nhattienvo21!',
                                   host='cloud-lab-mysql.mysql.database.azure.com',
@@ -16,7 +18,7 @@ cnx = mysql.connector.connect(user='sev_ad', password='Nhattienvo21!',
 
 def register_user(user):
     
-    statement = "INSERT INTO 'cloud_lab_sys'.'user_login' ('login_name', 'password','dateCreated') VALUES (?, ?, ?)"
+    statement = cnx._prepared_statements(queries.REGISTER)
     statement.setString(1, user.getLogin())
     statement.setString(2,user.getPassword())
     statement.setString(3,user.getDateCreated())
@@ -32,3 +34,22 @@ def register_user(user):
     finally:
         cursor.close()
         cnx.close()
+
+def login (user):
+    statement = cnx._prepared_statements(queries.LOGIN)
+    statement.setString(1,user.getLogin())
+    statement.setString(2,user.getPassword())
+    
+    resultSet = statement.executeQuery
+    
+    count = 0
+    
+    while resultSet.next():
+        print("Number of Users: " + resultSet.getInt(1))
+        count = resultSet.getInt(1)
+        
+    if count == 0:
+        raise ValueError(statement.setString(2,user.getPassword()))
+    
+
+
