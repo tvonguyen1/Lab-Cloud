@@ -6,11 +6,8 @@ class user:
     __loginname = None
     __password = None
     __dateCreated = None
-    def __init__ (self,id, loginname, password, dateCreated):
-        self.__id = id
-        self.__loginname = loginname
-        self.__password = password
-        self.__dateCreated = dateCreated
+    def __init__(self):
+        pass
     
     def setId (self, id):
         self.__id = id
