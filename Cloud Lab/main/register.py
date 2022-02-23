@@ -11,7 +11,8 @@ import traceback
 
 try:
     cnx = mysql.connector.connect(host='cloud-lab-mysql.mysql.database.azure.com',
-                                  port=3306 ,user='sev_ad', passwd='Nhattienvo21!',
+                                  user='sev_ad', 
+                                  passwd='Nhattienvo21!',
                                   db='cloud_lab_sys')
     
 except mysql.connector.Error as e:
@@ -27,11 +28,11 @@ cursor = cnx.cursor()
 
 username = input("Enter username: ")
 passwd = input("Enter password: ")
-current_time = date.today()
+
     
-statement = "INSERT INTO cloud_lab_sys.user_login (login_name,password,date_created) VALUES (%s, %s, %s)"
+statement = "INSERT INTO cloud_lab_sys.user_login (login_name,password) VALUES (%s, %s)"
     
-vals = (username, passwd, current_time)
+vals = (username, passwd)
     
 try:
     cursor.execute(statement,vals)

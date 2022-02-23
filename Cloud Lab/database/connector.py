@@ -10,7 +10,7 @@ import mysql.connector
 from mysql.connector import Error
 from database import queries
 import traceback
-from main.__main__ import register
+from main.register import register
 
 
 
