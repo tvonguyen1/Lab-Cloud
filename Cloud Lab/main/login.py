@@ -1,12 +1,11 @@
 '''
-Created on Feb 22, 2022
+Created on Feb 23, 2022
 
 @author: nhatt
 '''
-from datetime import date
-from main import user, exception
 import mysql.connector
 from mysql.connector import Error
+from main import user, exception
 import traceback
 
 try:
@@ -29,26 +28,30 @@ cursor = cnx.cursor()
 username = input("Enter username: ")
 passwd = input("Enter password: ")
 
-    
-statement = "INSERT INTO cloud_lab_sys.user_login (login_name,password) VALUES (%s, %s)"
-    
-vals = (username, passwd)
-    
+statement = "SELECT count(*) FROM cloud_lab_sys.user_login WHERE login_name = %s AND password = %s"
+
+vals = (username,passwd)
+
+
+
 try:
-    cursor.execute(statement,vals)
+    count = cursor.execute(statement,vals)
     cnx.commit()
     
-except Error:
-    print("Username already taken")
-        
-         
+    
+    
+    if count == 0:
+        raise exception.valueError(Error)
+    
+    print("Succesfully login!")
+
+except exception.valueError:
+    print("Username or password is incorrect")
+    
+    
 finally:
     cursor.close()
     cnx.close()
     
     
     
-    
-      
-   
-        

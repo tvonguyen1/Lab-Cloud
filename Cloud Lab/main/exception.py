@@ -10,3 +10,7 @@ class Error (Exception):
 class nullValue (Error):
     """when there is missing field"""
     pass
+
+class valueError (Error):
+    """When there is unmatch data"""
+    pass
