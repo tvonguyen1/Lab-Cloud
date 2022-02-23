@@ -1,7 +1,7 @@
-from django.contrib.auth.password_validation import password_changed
+
 from pickle import NONE
 
-class user:
+class user():
     __id = None
     __loginname = None
     __password = None
