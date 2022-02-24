@@ -44,5 +44,4 @@ def register():
         cursor.close()
         cnx.close()
 
-
 register()
