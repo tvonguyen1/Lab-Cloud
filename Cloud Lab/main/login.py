@@ -8,7 +8,6 @@ import exception
 from mysql.connector import Error
 import traceback
 
-
 def login():
     try:
         cnx = mysql.connector.connect(host='cloud-lab-mysql.mysql.database.azure.com',
