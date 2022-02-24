@@ -6,6 +6,7 @@ Created on Feb 22, 2022
 from datetime import date
 import mysql.connector
 from mysql.connector import Error
+from datetime import datetime
 import traceback
 
 
@@ -29,9 +30,12 @@ def register():
     username = input("Enter username: ")
     passwd = input("Enter password: ")
 
-    statement = "INSERT INTO cloud_lab_sys.user_login (login_name,password) VALUES (%s, %s)"
+    now = datetime.now()
+    formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
 
-    vals = (username, passwd)
+    statement = "INSERT INTO cloud_lab_sys.user_login (login_name,password,date_create) VALUES (%s, %s, %s)"
+
+    vals = (username, passwd, formatted_date)
 
     try:
         cursor.execute(statement, vals)
@@ -43,5 +47,6 @@ def register():
     finally:
         cursor.close()
         cnx.close()
+
 
 register()
