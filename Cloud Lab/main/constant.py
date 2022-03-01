@@ -173,6 +173,11 @@ class Constant:
     EXECUTE_TYPE_CRAWLER = "crawler"
     EXECUTE_TYPE_THUMBNAIL = "thumbnail"
     EXECUTE_TYPE_PYTHON = "python"
+    EXECUTE_TYPE_SUGGEST = "suggest"
+    DEFAULT_SCRIPT = "groovy"
+    TEXT_FRAGMENTS = "text_fragments"
+    TEXT_FRAGMENT_TYPE_QUERY = "query"
+    TEXT_FRAGMENT_TYPE_HIGHLIGHT = "highlight"
 
 
 
