@@ -15,6 +15,7 @@ DEFAULT_BATCH_SIZE = 500
 DEFAULT_ES_URL = "http://localhost:9200"
 DEFAULT_INDEX_NAME = "drivefile"
 
+
 def strip_html_css_js(msg):
     soup = BeautifulSoup(msg, "html.parser")  # create a new bs4 object from the html data loaded
     for script in soup(["script", "style"]):  # remove all javascript and stylesheet code
@@ -41,7 +42,6 @@ def delete_index():
 
 
 def create_index():
-
     schema = {
         "settings": {
             "number_of_shards": tornado.options.options.num_of_shards,
@@ -66,7 +66,8 @@ def create_index():
     body = json.dumps(schema)
     url = "%s/%s" % (tornado.options.options.es_url, tornado.options.options.index_name)
     try:
-        request = HTTPRequest(url, method="PUT", body=body, request_timeout=240, headers={"Content-Type": "application/json"})
+        request = HTTPRequest(url, method="PUT", body=body, request_timeout=240,
+                              headers={"Content-Type": "application/json"})
         response = http_client.fetch(request)
         logging.info('Create index done   %s' % response.body)
     except:
@@ -74,4 +75,3 @@ def create_index():
 
 
 total_uploaded = 0
-
