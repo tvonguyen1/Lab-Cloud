@@ -11,10 +11,10 @@ import traceback
 
 def login():
     try:
-        cnx = mysql.connector.connect(host='cloud-lab-mysql.mysql.database.azure.com',
-                                      user='sev_ad',
+        cnx = mysql.connector.connect(host='35.196.243.170',
+                                      user='root',
                                       passwd='Nhattienvo21!',
-                                      db='cloud_lab_sys')
+                                      db='cloud_schema')
 
     except mysql.connector.Error as e:
         if e.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
@@ -29,7 +29,7 @@ def login():
     username = input("Enter username: ")
     passwd = input("Enter password: ")
 
-    statement = "SELECT * FROM cloud_lab_sys.user_login WHERE login_name = %s AND password = %s"
+    statement = "SELECT * FROM cloud_schema.user_login WHERE login_name = %s AND password = %s"
 
     vals = (username, passwd)
 
