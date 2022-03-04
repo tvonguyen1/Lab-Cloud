@@ -51,12 +51,21 @@ def create_index(es_object, index_name):
             "file": {
                 "_source": {"enabled": True},
                 "properties": {
-                    "title": {"type": "text"},
-                    "type": {"type": "text"},
-                    "size": {"type": "text"},
-                    "location": {"type": "text"},
-                    "owner": {"type": "text"},
-                    "date_create": {"type": "date"},
+                    "id": {"type": "string"},
+                    "owned_by_me": {"type": "boolean"},
+                    "title": {"type": "string"},
+                    "type": {"type": "string"},
+                    "size": {"type": "string"},
+                    "description": {"type": "string"},
+                    "date_create": {"type": "datetime"},
+                    "labels": {
+                        "starred": {"type": "boolean"},
+                        "hidden": {"type": "boolean"},
+                        "trashed": {"type": "boolean"},
+                        "restricted": {"type": "boolean"},
+                        "viewed": {"type": "boolean"},
+                        "modified": {"type": "boolean"},
+                    },
                 },
             }
         },
@@ -87,12 +96,19 @@ def store_record(elastic_object, index_name, record):
         return is_stored
 
     def parse(u):
+        id = '-'
+        owned_by_me = 'false'
         title = '-'
         type = '-'
         size = '-'
-        location = '-'
         owner = '-'
         date_create = None
+        starred = 'false'
+        hidden = 'false'
+        trashed = 'false'
+        restricted = 'false'
+        viewed = 'false'
+        modified = 'false'
         rec = {}
 
 

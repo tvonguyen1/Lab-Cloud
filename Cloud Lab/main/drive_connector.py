@@ -12,7 +12,7 @@ from googleapiclient.errors import HttpError
 SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
 
 
-def main():
+def connector():
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
     """
@@ -54,4 +54,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    connector()
