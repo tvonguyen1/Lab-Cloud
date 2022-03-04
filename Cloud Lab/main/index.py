@@ -1,20 +1,13 @@
 from tornado.httpclient import HTTPClient, HTTPRequest
-from tornado.ioloop import IOLoop
 import tornado.options
 import json
-import time
-import calendar
-import quopri
-import chardet
 import ndjson
 from bs4 import BeautifulSoup
 import logging
+import requests
+from elasticsearch import Elasticsearch
 
 http_client = HTTPClient()
-
-DEFAULT_BATCH_SIZE = 500
-DEFAULT_ES_URL = "http://localhost:9200"
-DEFAULT_INDEX_NAME = "drivefile"
 
 
 def strip_html_css_js(msg):
@@ -42,7 +35,13 @@ def delete_index():
         pass
 
 
-def create_index():
+def search(es_object, index_name, search):
+    res = es_object.search(index=index_name, body=search)
+    print(res)
+
+
+def create_index(es_object, index_name):
+    created = False
     schema = {
         "settings": {
             "number_of_shards": tornado.options.options.num_of_shards,
@@ -52,59 +51,51 @@ def create_index():
             "file": {
                 "_source": {"enabled": True},
                 "properties": {
-                    "name": {"type": "string", "index": "not_analyzed"},
-                    "type": {"type": "string", "index": "not_analyzed"},
-                    "size": {"type": "string", "index": "not_analyzed"},
-                    "location": {"type": "string", "index": "not_analyzed"},
-                    "file-id": {"type": "string", "index": "not_analyzed"},
-                    "owner": {"type": "string", "index": "not_analyzed"},
+                    "title": {"type": "text"},
+                    "type": {"type": "text"},
+                    "size": {"type": "text"},
+                    "location": {"type": "text"},
+                    "owner": {"type": "text"},
                     "date_create": {"type": "date"},
                 },
             }
         },
         "refresh": True
     }
-
-    body = json.dumps(schema)
-    url = "%s/%s" % (tornado.options.options.es_url, tornado.options.options.index_name)
     try:
-        request = HTTPRequest(url, method="PUT", body=body, request_timeout=240,
-                              headers={"Content-Type": "application/json"})
-        response = http_client.fetch(request)
-        logging.info('Create index done   %s' % response.body)
-    except:
-        pass
+        if not es_object.indices.exists(index_name):
+            # Ignore 400 means to ignore "Index Already Exist" error.
+            es_object.indices.create(index=index_name, ignore=400, body=schema)
+            print('Created Index')
+        created = True
+    except Exception as ex:
+        print(str(ex))
+    finally:
+        return created
 
 
-total_uploaded = 0
+def store_record(elastic_object, index_name, record):
+    is_stored = True
+    try:
+        outcome = elastic_object.index(index=index_name, doc_type='salads', body=record)
+        print(outcome)
+    except Exception as ex:
+        print('Error in indexing data')
+        print(str(ex))
+        is_stored = False
+    finally:
+        return is_stored
+
+    def parse(u):
+        title = '-'
+        type = '-'
+        size = '-'
+        location = '-'
+        owner = '-'
+        date_create = None
+        rec = {}
+
 
 def convert_file_to_json(blob):
     json_data_string = blob.download_as_string()
     json_data = ndjson.loads(json_data_string)
-
-
-
-def upload_batch(upload_data):
-    if tornado.options.options.dry_run:
-        logging.info("Dry run, not uploading")
-        return
-    upload_data_txt = ""
-    for item in upload_data:
-        cmd = {'index': {'_index': tornado.options.options.index_name, '_type': 'file', '_id': item['message-id']}}
-        try:
-            json_cmd = json.dumps(cmd) + "\n"
-            json_item = json.dumps(item) + "\n"
-        except:
-            logging.warn('Skipping mail with message id %s because of exception converting to JSON (invalid characters?).' % item['message-id'])
-            continue
-        upload_data_txt += json_cmd
-        upload_data_txt += json_item
-
-    request = HTTPRequest(tornado.options.options.es_url + "/_bulk", method="POST", body=upload_data_txt, request_timeout=240, headers={"Content-Type": "application/json"})
-    response = http_client.fetch(request)
-    result = json.loads(response.body)
-
-    global total_uploaded
-    total_uploaded += len(upload_data)
-    res_txt = "OK" if not result['errors'] else "FAILED"
-    logging.info("Upload: %s - upload took: %4dms, total messages uploaded: %6d" % (res_txt, result['took'], total_uploaded))
