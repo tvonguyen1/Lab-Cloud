@@ -44,7 +44,7 @@ def create_index(es_object, index_name):
     created = False
     schema = {
         "settings": {
-            "number_of_shards": tornado.options.options.num_of_shards,
+            "number_of_shards": 1,
             "number_of_replicas": 0
         },
         "mappings": {
@@ -86,7 +86,7 @@ def create_index(es_object, index_name):
 def store_record(elastic_object, index_name, record):
     is_stored = True
     try:
-        outcome = elastic_object.index(index=index_name, doc_type='salads', body=record)
+        outcome = elastic_object.index(index=index_name, doc_type='files', body=record)
         print(outcome)
     except Exception as ex:
         print('Error in indexing data')
@@ -102,7 +102,7 @@ def store_record(elastic_object, index_name, record):
         type = '-'
         size = '-'
         owner = '-'
-        date_create = None
+        date_create = "0001-01-01T00:00:00"
         starred = 'false'
         hidden = 'false'
         trashed = 'false'
@@ -115,3 +115,7 @@ def store_record(elastic_object, index_name, record):
 def convert_file_to_json(blob):
     json_data_string = blob.download_as_string()
     json_data = ndjson.loads(json_data_string)
+
+
+
+
