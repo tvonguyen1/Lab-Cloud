@@ -33,9 +33,12 @@ def connector():
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
+    return creds
 
+
+def show10files(cred):
     try:
-        service = build('drive', 'v3', credentials=creds)
+        service = build('drive', 'v3', credentials=cred)
 
         # Call the Drive v3 API
         results = service.files().list(
@@ -70,4 +73,5 @@ def getfile(drive_service):
 
 
 if __name__ == '__main__':
-    connector()
+    service = connector()
+    show10files(service)

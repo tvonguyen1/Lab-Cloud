@@ -98,7 +98,7 @@ class PersonalizedSearch:
         finally:
             return is_stored
 
-    def parse(u):
+    def parse(search):
         id = '-'
         owned_by_me = 'false'
         title = '-'
@@ -113,6 +113,8 @@ class PersonalizedSearch:
         viewed = 'false'
         modified = 'false'
         rec = {}
+
+        list = str.split()
 
 
     def convert_file_to_json(blob):
