@@ -8,6 +8,7 @@ from constant import Search
 import requests
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import TransportError, ConnectionError
+from queries import queries
 
 
 @dataclass
@@ -56,20 +57,10 @@ class PersonalizedSearch:
                     "_source": {"enabled": True},
                     "properties": {
                         "id": {"type": "string"},
-                        "owned_by_me": {"type": "boolean"},
                         "title": {"type": "string"},
-                        "type": {"type": "string"},
-                        "size": {"type": "string"},
+                        "mime_type": {"type": "string"},
                         "description": {"type": "string"},
-                        "date_create": {"type": "datetime"},
-                        "labels": {
-                            "starred": {"type": "boolean"},
-                            "hidden": {"type": "boolean"},
-                            "trashed": {"type": "boolean"},
-                            "restricted": {"type": "boolean"},
-                            "viewed": {"type": "boolean"},
-                            "modified": {"type": "boolean"},
-                        },
+
                     },
                 }
             },
@@ -100,21 +91,27 @@ class PersonalizedSearch:
 
     def parse(search):
         id = '-'
-        owned_by_me = 'false'
         title = '-'
-        type = '-'
-        size = '-'
-        owner = '-'
-        date_create = "0001-01-01T00:00:00"
-        starred = 'false'
-        hidden = 'false'
-        trashed = 'false'
-        restricted = 'false'
-        viewed = 'false'
-        modified = 'false'
+        mime_type = '-'
+        description ='-'
         rec = {}
 
-        list = str.split()
+        list = search.split()
+        try:
+            for i in list:
+                if queries().get_file_id(list[i]):
+                    id = list[i]
+                if queries().get_file_name(list[i]):
+                    title = list[i]
+                if queries().get_file_type(list[i]):
+                    mime_type = list[i]
+                if queries().get_file_description(list[i]):
+                    description = list[i]
+                rec = {'id': id, 'title': title, 'mimetype': mime_type, 'description': description}
+                json.dumps(rec)
+        except Exception as ex:
+            print('Exception while parsing')
+            print(str(ex))
 
 
     def convert_file_to_json(blob):
