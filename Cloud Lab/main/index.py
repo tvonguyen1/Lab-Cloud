@@ -93,7 +93,7 @@ class PersonalizedSearch:
         id = '-'
         title = '-'
         mime_type = '-'
-        description ='-'
+        description = '-'
         rec = {}
 
         list = search.split()
@@ -105,15 +105,16 @@ class PersonalizedSearch:
                     title = list[i]
                 if queries().get_file_type(list[i]):
                     mime_type = list[i]
-                if queries().get_file_description(list[i]):
-                    description = list[i]
+
                 rec = {'id': id, 'title': title, 'mimetype': mime_type, 'description': description}
                 json.dumps(rec)
         except Exception as ex:
             print('Exception while parsing')
             print(str(ex))
 
-
     def convert_file_to_json(blob):
         json_data_string = blob.download_as_string()
         json_data = ndjson.loads(json_data_string)
+
+    if __name__ == '__main__':
+
