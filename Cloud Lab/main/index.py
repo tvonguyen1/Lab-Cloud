@@ -9,6 +9,7 @@ import requests
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import TransportError, ConnectionError
 from queries import queries
+import drive_connector
 
 
 @dataclass
@@ -117,4 +118,11 @@ class PersonalizedSearch:
         json_data = ndjson.loads(json_data_string)
 
     if __name__ == '__main__':
+        service = drive_connector()
+        es = connect_elasticsearch()
+        search_input = input ("Enter your search: ")
+        result = parse (search_input)
+
+
+
 
