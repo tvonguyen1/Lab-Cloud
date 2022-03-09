@@ -122,6 +122,12 @@ class PersonalizedSearch:
         es = connect_elasticsearch()
         search_input = input ("Enter your search: ")
         result = parse (search_input)
+        if es is not None:
+            if create_index(es, 'files'):
+                out = store_record(es, 'files', result)
+                print('Data indexed successfully')
+            search_object = {'_source': ['title'], 'query': {"match_all":{}}}
+            search(es, 'files', json.dumps(search_object))
 
 
 
