@@ -117,6 +117,8 @@ class PersonalizedSearch:
         json_data_string = blob.download_as_string()
         json_data = ndjson.loads(json_data_string)
 
+
+
     if __name__ == '__main__':
         service = drive_connector()
         es = connect_elasticsearch()
@@ -128,6 +130,9 @@ class PersonalizedSearch:
                 print('Data indexed successfully')
             search_object = {'_source': ['title'], 'query': {"match_all":{}}}
             search(es, 'files', json.dumps(search_object))
+            
+
+
 
 
 
