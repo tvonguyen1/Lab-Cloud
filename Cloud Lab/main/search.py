@@ -26,7 +26,7 @@ class search:
 def getfile(service, title, id, description):
     page_token = None
     while True:
-        response = service.files().list(q="name contains %s and id contains %s and description contains %s",
+        response = service.files().list(q='"name contains"' + "'" + title + "'" + "and id contains" + "'" + id + "and description contains",
 
                                         spaces='drive',
                                         fields='nextPageToken, files(id, name)',
